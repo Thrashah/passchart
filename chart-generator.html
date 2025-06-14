@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Random Chart Generator</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <button onclick="generateChart()">Generate Random Chart</button>
+    <canvas id="myChart"></canvas>
+
+    <script>
+        function generateRandomData() {
+            return Array.from({ length: 5 }, () => Math.floor(Math.random() * 100));
+        }
+
+        function generateChart() {
+            const ctx = document.getElementById('myChart').getContext('2d');
+
+            // Destroy previous chart instance (prevents overlap issues)
+            if (window.myChart) {
+                window.myChart.destroy();
+            }
+
+            window.myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['A', 'B', 'C', 'D', 'E'],
+                    datasets: [{
+                        label: 'Random Data',
+                        data: generateRandomData(),
+                        backgroundColor: 'blue'
+                    }]
+                }
+            });
+        }
+    </script>
+</body>
+</html>
