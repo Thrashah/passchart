@@ -2,35 +2,53 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Random Chart Generator</title>
+    <title>Random Alphabet Chart</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
+    <canvas id="alphabetChart"></canvas>
     <button onclick="generateChart()">Generate Random Chart</button>
-    <canvas id="myChart"></canvas>
 
     <script>
-        function generateRandomData() {
-            return Array.from({ length: 5 }, () => Math.floor(Math.random() * 100));
+        function getRandomCharacters() {
+            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            return Array.from({ length: 4 }, () => characters[Math.floor(Math.random() * characters.length)]).join('');
         }
 
         function generateChart() {
-            const ctx = document.getElementById('myChart').getContext('2d');
-
-            // Destroy previous chart instance (prevents overlap issues)
-            if (window.myChart) {
-                window.myChart.destroy();
+            const ctx = document.getElementById('alphabetChart').getContext('2d');
+            const labels = Array.from({ length: 26 }, (_, i) => String.fromCharCode(65 + i)); // A-Z
+            const dataLabels = labels.map(() => getRandomCharacters()); // Assign 4 random characters under each letter
+            
+            if (window.alphabetChartInstance) {
+                window.alphabetChartInstance.destroy(); // Prevent overlapping charts
             }
 
-            window.myChart = new Chart(ctx, {
+            window.alphabetChartInstance = new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: ['A', 'B', 'C', 'D', 'E'],
+                    labels: labels,
                     datasets: [{
-                        label: 'Random Data',
-                        data: generateRandomData(),
+                        label: 'Random Values',
+                        data: Array(26).fill(50), // Placeholder values (bars won't be visually relevant)
                         backgroundColor: 'blue'
                     }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(tooltipItem) {
+                                    return dataLabels[tooltipItem.dataIndex]; // Show random characters in tooltip
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: { ticks: { font: { size: 14 } } },
+                        y: { display: false } // Hide Y-axis since it's not numerically meaningful
+                    }
                 }
             });
         }
