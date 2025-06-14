@@ -1,66 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Alphabet Password Chart</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        body { text-align: center; font-family: Arial, sans-serif; }
-        canvas { max-width: 90%; margin: 20px auto; }
-        button { padding: 10px 20px; font-size: 16px; cursor: pointer; }
-    </style>
+  <meta charset="UTF-8">
+  <title>Password Chart Generator</title>
+  <style>
+    body {
+      font-family: monospace;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 40px;
+    }
+    table {
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      padding: 10px;
+      text-align: center;
+      border: 1px solid #ccc;
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
-    <canvas id="alphabetChart"></canvas>
-    <button onclick="generateChart()">Generate New Chart</button>
 
-    <script>
-        function getRandomCharacters() {
-            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()-_=+';
-            return Array.from({ length: 4 }, () => characters[Math.floor(Math.random() * characters.length)]).join('');
-        }
+<h1>Password Chart</h1>
+<table id="chart">
+  <thead>
+    <tr id="topRow"></tr>
+  </thead>
+  <tbody>
+    <tr id="bottomRow"></tr>
+  </tbody>
+</table>
 
-        function generateChart() {
-            const ctx = document.getElementById('alphabetChart').getContext('2d');
-            const labels = Array.from({ length: 26 }, (_, i) => String.fromCharCode(65 + i)); // A-Z
-            const dataLabels = labels.map(() => getRandomCharacters()); // Assign 4 random characters under each letter
-            
-            if (window.alphabetChartInstance) {
-                window.alphabetChartInstance.destroy(); // Prevent overlapping charts
-            }
+<button onclick="generateChart()">Generate</button>
 
-            window.alphabetChartInstance = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Random Characters',
-                        data: Array(26).fill(1), // Minimal bars for formatting
-                        backgroundColor: 'transparent' // Hide bars visually
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        tooltip: {
-                            callbacks: {
-                                label: function(tooltipItem) {
-                                    return dataLabels[tooltipItem.dataIndex]; // Show random characters
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        x: { 
-                            ticks: { font: { size: 14 } } 
-                        },
-                        y: { 
-                            display: false // Hide Y-axis for clean formatting
-                        }
-                    }
-                }
-            });
-        }
-    </script>
+<script>
+  const characters = 'abcdefghijklmnopqrstuvwxyz0123456789'.split('');
+
+  function randomChar() {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*.,:;<>?/|';
+    let str = '';
+    for (let i = 0; i < 4; i++) {
+      str += chars[Math.floor(Math.random() * chars.length)];
+    }
+    return str;
+  }
+
+  function generateChart() {
+    const topRow = document.getElementById('topRow');
+    const bottomRow = document.getElementById('bottomRow');
+
+    topRow.innerHTML = '';
+    bottomRow.innerHTML = '';
+
+    characters.forEach(char => {
+      const th = document.createElement('th');
+      th.textContent = char;
+      topRow.appendChild(th);
+
+      const td = document.createElement('td');
+      td.textContent = randomChar();
+      bottomRow.appendChild(td);
+    });
+  }
+
+  // Generate once on load
+  generateChart();
+</script>
+
 </body>
 </html>
