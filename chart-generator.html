@@ -15,10 +15,15 @@
       border-collapse: collapse;
       margin-top: 20px;
     }
-    th, td {
+    td {
       padding: 10px;
       text-align: center;
       border: 1px solid #ccc;
+      width: 60px;
+    }
+    .char {
+      font-weight: bold;
+      font-size: 1.2em;
     }
     button {
       margin-top: 20px;
@@ -31,14 +36,8 @@
 <body>
 
 <h1>Password Chart</h1>
-<table id="chart">
-  <thead>
-    <tr id="topRow"></tr>
-  </thead>
-  <tbody>
-    <tr id="bottomRow"></tr>
-  </tbody>
-</table>
+
+<table id="chart"></table>
 
 <button onclick="generateChart()">Generate</button>
 
@@ -55,21 +54,32 @@
   }
 
   function generateChart() {
-    const topRow = document.getElementById('topRow');
-    const bottomRow = document.getElementById('bottomRow');
+    const chart = document.getElementById('chart');
+    chart.innerHTML = '';
 
-    topRow.innerHTML = '';
-    bottomRow.innerHTML = '';
+    const chunkSize = 6;
+    for (let i = 0; i < characters.length; i += chunkSize) {
+      const group = characters.slice(i, i + chunkSize);
 
-    characters.forEach(char => {
-      const th = document.createElement('th');
-      th.textContent = char;
-      topRow.appendChild(th);
+      // Row for letters
+      const letterRow = document.createElement('tr');
+      group.forEach(char => {
+        const td = document.createElement('td');
+        td.className = 'char';
+        td.textContent = char;
+        letterRow.appendChild(td);
+      });
+      chart.appendChild(letterRow);
 
-      const td = document.createElement('td');
-      td.textContent = randomChar();
-      bottomRow.appendChild(td);
-    });
+      // Row for generated values
+      const valueRow = document.createElement('tr');
+      group.forEach(() => {
+        const td = document.createElement('td');
+        td.textContent = randomChar();
+        valueRow.appendChild(td);
+      });
+      chart.appendChild(valueRow);
+    }
   }
 
   // Generate once on load
