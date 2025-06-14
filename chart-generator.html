@@ -11,22 +11,45 @@
       align-items: center;
       margin: 40px;
     }
+
+    .main-container {
+      display: flex;
+      align-items: flex-start;
+      gap: 40px;
+    }
+
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .options label {
+      font-size: 1rem;
+      cursor: pointer;
+      user-select: none;
+    }
+
     table {
       border-collapse: collapse;
       margin-top: 20px;
     }
+
     td {
       padding: 10px;
       text-align: center;
       border: 1px solid #ccc;
       width: 60px;
     }
+
     .char {
       font-weight: bold;
       font-size: 1.2em;
     }
+
     button {
-      margin-top: 20px;
+      margin-top: 30px;
       padding: 10px 20px;
       font-size: 1rem;
       cursor: pointer;
@@ -37,15 +60,42 @@
 
 <h1>Password Chart</h1>
 
-<table id="chart"></table>
+<div class="main-container">
+  <!-- Sidebar options -->
+  <div class="options">
+    <label>
+      <input type="checkbox" id="onlyLetters"> Only Letters
+    </label>
+    <label>
+      <input type="checkbox" id="onlyNumbers"> Only Numbers
+    </label>
+  </div>
+
+  <!-- Chart -->
+  <table id="chart"></table>
+</div>
 
 <button onclick="generateChart()">Generate</button>
 
 <script>
   const characters = 'abcdefghijklmnopqrstuvwxyz0123456789'.split('');
 
+  function getCharSet() {
+    const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+    const numbers = '0123456789';
+    const symbols = '!@#$%^&*.,:;<>?/|';
+
+    const onlyLetters = document.getElementById('onlyLetters').checked;
+    const onlyNumbers = document.getElementById('onlyNumbers').checked;
+
+    if (onlyLetters && !onlyNumbers) return letters;
+    if (onlyNumbers && !onlyLetters) return numbers;
+    if (onlyLetters && onlyNumbers) return letters + numbers;
+    return letters + numbers + symbols;
+  }
+
   function randomChar() {
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*.,:;<>?/|';
+    const chars = getCharSet();
     let str = '';
     for (let i = 0; i < 4; i++) {
       str += chars[Math.floor(Math.random() * chars.length)];
@@ -61,7 +111,6 @@
     for (let i = 0; i < characters.length; i += chunkSize) {
       const group = characters.slice(i, i + chunkSize);
 
-      // Row for letters
       const letterRow = document.createElement('tr');
       group.forEach(char => {
         const td = document.createElement('td');
@@ -71,7 +120,6 @@
       });
       chart.appendChild(letterRow);
 
-      // Row for generated values
       const valueRow = document.createElement('tr');
       group.forEach(() => {
         const td = document.createElement('td');
