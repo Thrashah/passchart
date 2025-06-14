@@ -2,16 +2,21 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Random Alphabet Chart</title>
+    <title>Alphabet Password Chart</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { text-align: center; font-family: Arial, sans-serif; }
+        canvas { max-width: 90%; margin: 20px auto; }
+        button { padding: 10px 20px; font-size: 16px; cursor: pointer; }
+    </style>
 </head>
 <body>
     <canvas id="alphabetChart"></canvas>
-    <button onclick="generateChart()">Generate Random Chart</button>
+    <button onclick="generateChart()">Generate New Chart</button>
 
     <script>
         function getRandomCharacters() {
-            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()-_=+';
             return Array.from({ length: 4 }, () => characters[Math.floor(Math.random() * characters.length)]).join('');
         }
 
@@ -29,9 +34,9 @@
                 data: {
                     labels: labels,
                     datasets: [{
-                        label: 'Random Values',
-                        data: Array(26).fill(50), // Placeholder values (bars won't be visually relevant)
-                        backgroundColor: 'blue'
+                        label: 'Random Characters',
+                        data: Array(26).fill(1), // Minimal bars for formatting
+                        backgroundColor: 'transparent' // Hide bars visually
                     }]
                 },
                 options: {
@@ -40,14 +45,18 @@
                         tooltip: {
                             callbacks: {
                                 label: function(tooltipItem) {
-                                    return dataLabels[tooltipItem.dataIndex]; // Show random characters in tooltip
+                                    return dataLabels[tooltipItem.dataIndex]; // Show random characters
                                 }
                             }
                         }
                     },
                     scales: {
-                        x: { ticks: { font: { size: 14 } } },
-                        y: { display: false } // Hide Y-axis since it's not numerically meaningful
+                        x: { 
+                            ticks: { font: { size: 14 } } 
+                        },
+                        y: { 
+                            display: false // Hide Y-axis for clean formatting
+                        }
                     }
                 }
             });
